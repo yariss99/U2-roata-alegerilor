@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roata provocărilor | CRED ÎN EDUCAȚIE</title>
+<style>
+:root{
+  --navy:#17345b; --red:#d92d35; --gold:#f4c84b; --cream:#fff9e9;
+  --panel:rgba(255,255,255,.94); --shadow:0 12px 30px rgba(30,54,84,.16);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; color:var(--navy);
+  font-family:"Trebuchet MS",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 12% 12%,rgba(255,255,255,.9) 0 2px,transparent 3px),
+    linear-gradient(135deg,#dff4ff 0%,#fff6d9 48%,#e7f8df 100%);
+  background-size:34px 34px,auto;
+}
+.page{max-width:1280px;margin:auto;padding:22px 22px 16px}
+header{text-align:center;margin:0 auto 18px}
+.kicker{display:inline-block;padding:7px 16px;border-radius:30px;background:#fff;border:2px solid #f2d36b;color:#9a4b16;font-weight:900;letter-spacing:.08em;font-size:.82rem}
+h1{font-size:clamp(2rem,4vw,3.7rem);line-height:1;margin:12px 0 8px;color:#15365e;text-shadow:2px 3px 0 #fff}
+.subtitle{font-size:1.05rem;margin:0;color:#46617f;font-weight:700}
+.layout{display:grid;grid-template-columns:minmax(320px,1.2fr) minmax(300px,.8fr);gap:22px;align-items:center}
+.wheel-panel,.control-panel{background:var(--panel);border:3px solid rgba(255,255,255,.9);border-radius:28px;box-shadow:var(--shadow)}
+.wheel-panel{padding:18px;position:relative}
+.wheel-wrap{width:min(100%,690px);aspect-ratio:1;margin:auto;position:relative}
+#wheel{width:100%;height:100%;display:block;filter:drop-shadow(0 8px 9px rgba(23,52,91,.18))}
+.pointer{position:absolute;z-index:3;top:-5px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;border-top:55px solid #e12e38;filter:drop-shadow(0 3px 2px #7e1b20)}
+.center-label{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);width:23%;aspect-ratio:1;border-radius:50%;background:linear-gradient(145deg,#fff8d5,#f4c84b);border:7px solid #fff;box-shadow:0 0 0 5px #d99c25,0 5px 12px #7c622c66;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:1000;color:#9b2a24;font-size:clamp(.65rem,1.5vw,1.05rem);line-height:1.12;padding:8px}
+.wheel-hint{text-align:center;color:#62768d;font-weight:700;margin:12px 0 0;font-size:.92rem}
+.control-panel{padding:24px}
+.control-panel h2{margin:0 0 6px;font-size:1.55rem}
+.intro{margin:0 0 18px;color:#5d7189;line-height:1.4}
+label{display:block;font-weight:900;margin:13px 0 7px}
+select,textarea,input{font:inherit;width:100%;border:2px solid #d9e4ef;border-radius:12px;padding:11px 12px;background:#fff;color:#233d5c;outline:none}
+select:focus,textarea:focus,input:focus{border-color:#55a9df;box-shadow:0 0 0 3px #55a9df22}
+textarea{min-height:82px;resize:vertical}
+.field-note{font-size:.82rem;color:#6b7e92;margin:6px 0 0;line-height:1.35}
+.primary,.secondary,.reset{
+  border:0;border-radius:15px;padding:13px 16px;font-weight:1000;cursor:pointer;
+  transition:transform .15s,filter .15s;letter-spacing:.02em
+}
+.primary{width:100%;margin-top:18px;background:linear-gradient(180deg,#ffdf69,#f3b92e);color:#642c12;font-size:1.2rem;box-shadow:0 5px 0 #c78b1c}
+.primary:hover,.secondary:hover,.reset:hover{filter:brightness(1.04);transform:translateY(-1px)}
+.primary:active{transform:translateY(3px);box-shadow:0 2px 0 #c78b1c}
+.primary:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.button-row{display:flex;gap:10px;margin-top:12px}
+.sound-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:10px 12px;border-radius:14px;background:#f4f8fc;border:1px solid #d9e7f3}
+.sound-row span{font-weight:900;color:#315575;font-size:.92rem}
+.sound-toggle{border:2px solid #cfe5f7;border-radius:12px;padding:9px 13px;background:#eaf5ff;color:#24517b;font-weight:1000;cursor:pointer;white-space:nowrap}
+.sound-toggle[aria-pressed="false"]{background:#fff0f0;border-color:#f3caca;color:#9e3035}
+.secondary,.reset{flex:1;background:#eaf5ff;color:#24517b;border:2px solid #cfe5f7}
+.reset{background:#fff0f0;color:#9e3035;border-color:#f3caca}
+.result{margin-top:18px;padding:15px;border-radius:18px;background:#f2f8ff;border:2px dashed #8fc2e8;min-height:105px}
+.result .small{font-size:.8rem;font-weight:900;color:#66809a;text-transform:uppercase;letter-spacing:.08em}
+.result h3{margin:5px 0 4px;font-size:1.35rem;color:#173e68}
+.result p{margin:0;color:#536c86;line-height:1.35}
+.progress{margin-top:16px}
+.progress-head{display:flex;justify-content:space-between;font-weight:900;font-size:.9rem;margin-bottom:7px}
+.track{height:12px;border-radius:20px;background:#e8edf3;overflow:hidden}
+.bar{height:100%;width:0;background:linear-gradient(90deg,#67c58c,#f2c34d);transition:width .25s}
+.drawn{margin-top:15px}
+.drawn h3{font-size:1rem;margin:0 0 8px}
+.pills{display:flex;flex-wrap:wrap;gap:6px;min-height:28px}
+.pill{font-size:.78rem;font-weight:900;background:#e8f4e9;color:#28633d;padding:5px 8px;border-radius:20px}
+.pill.current{background:#fff0c2;color:#85510d;outline:2px solid #f2ca58}
+footer{text-align:center;margin-top:18px;padding:11px 10px;color:#274c70;font-weight:1000;letter-spacing:.08em}
+footer span{display:inline-block;background:#fff;padding:8px 18px;border-radius:30px;border:2px solid #e7cf79;box-shadow:0 4px 12px #26415b16}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.wheel-wrap{max-width:590px}.control-panel{max-width:690px;width:100%;margin:auto}}
+@media(max-width:480px){.page{padding:14px 10px}.wheel-panel{padding:10px}.control-panel{padding:18px}.button-row{flex-direction:column}.pointer{border-left-width:16px;border-right-width:16px;border-top-width:42px}}
+@media print{body{background:white}.control-panel{box-shadow:none}.primary,.button-row,.sound-row{display:none}.layout{grid-template-columns:1fr}.wheel-panel{border:0;box-shadow:none}footer{margin-top:6px}}
+</style>
+</head>
+<body>
+<div class="page">
+<header>
+  <div class="kicker">MISIUNE: DOSARELE SECRETE</div>
+  <h1>ROATA PROVOCĂRILOR</h1>
+  <p class="subtitle">Învârte roata, descoperă dosarul și găsește cea mai bună alegere!</p>
+</header>
+
+<main class="layout">
+  <section class="wheel-panel" aria-label="Roata cu 12 provocări">
+    <div class="wheel-wrap">
+      <div class="pointer" aria-hidden="true"></div>
+      <svg id="wheel" viewBox="0 0 700 700" role="img" aria-label="Roată cu douăsprezece provocări"></svg>
+      <div class="center-label">DOSARE<br>SECRETE<br>12 PROVOCĂRI</div>
+    </div>
+    <p class="wheel-hint">Indicatorul roșu arată provocarea extrasă.</p>
+  </section>
+
+  <section class="control-panel">
+    <h2>Organizăm echipele</h2>
+    <p class="intro">Alege modul de repartizare. Fiecare provocare este extrasă o singură dată, până la reluarea jocului.</p>
+
+    <label for="mode">Mod de repartizare</label>
+    <select id="mode">
+      <option value="teams">Pe echipe</option>
+      <option value="individual">Individual</option>
+      <option value="random">Aleatoriu, fără repetare</option>
+    </select>
+
+    <div id="recipientsBox">
+      <label for="recipients" id="recipientsLabel">Denumirile echipelor</label>
+      <textarea id="recipients" placeholder="Echipa 1&#10;Echipa 2&#10;Echipa 3"></textarea>
+      <p class="field-note">Scrie câte un nume pe fiecare rând. Dacă lași câmpul liber, repartizarea va fi numerotată automat.</p>
+    </div>
+
+    <button class="primary" id="spinBtn">ÎNVÂRTE ROATA!</button>
+    <div class="button-row">
+      <button class="secondary" id="nextBtn">EXTRAGE URMĂTOAREA</button>
+      <button class="reset" id="resetBtn">REIA JOCUL</button>
+    </div>
+    <div class="sound-row"><span>EFECTE SONORE</span><button class="sound-toggle" id="soundBtn" type="button" aria-pressed="true">🔊 SUNET ACTIV</button></div>
+
+    <div class="result" aria-live="polite">
+      <div class="small" id="resultEyebrow">Ești gata de joc?</div>
+      <h3 id="resultTitle">Așteptăm prima provocare!</h3>
+      <p id="resultText">Apasă „ÎNVÂRTE ROATA!” pentru a repartiza primul dosar secret.</p>
+    </div>
+
+    <div class="progress">
+      <div class="progress-head"><span>Provocări repartizate</span><span id="count">0 / 12</span></div>
+      <div class="track"><div class="bar" id="bar"></div></div>
+    </div>
+    <div class="drawn">
+      <h3>Dosare deja repartizate</h3>
+      <div class="pills" id="pills"><span class="field-note">Niciun dosar extras încă.</span></div>
+    </div>
+  </section>
+</main>
+<footer><span>CRED ÎN EDUCAȚIE · ÎNVĂȚĂM PRIN JOC ȘI DESCOPERIRE</span></footer>
+</div>
+
+<script>
+const challenges = [
+ "Prietenul meu",
+ "Adevărul care doare",
+ "Secretul",
+ "Eroul",
+ "Obiectul găsit",
+ "Mesajul neplăcut",
+ "Ajutorul neașteptat",
+ "Promisiunea",
+ "Greșeala recunoscută",
+ "Coleg nou",
+ "Sinceritatea în echipă",
+ "O faptă bună sau o problemă?",
+];
+const colors = ["#ffe58b","#8dd9f5","#b8e89a","#d9b8f3","#f7a9c4","#9edcf4","#f7d16d","#c5b3ef","#f5a8bd","#b9e68f","#c7b4ef","#f6a9c4"];
+const svg = document.getElementById("wheel");
+const NS = "http://www.w3.org/2000/svg";
+const cx=350, cy=350, radius=326, n=challenges.length, step=360/n;
+let rotation=0, spinning=false, remaining=[...Array(n).keys()], history=[], assignmentIndex=0, lastIndex=-1;
+
+// Sunete generate local, prin Web Audio API (nu necesită fișiere audio sau internet).
+let soundEnabled = true;
+let audioContext = null;
+let tickTimer = null;
+
+function getAudioContext(){
+  if(!audioContext){
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if(AudioCtx) audioContext = new AudioCtx();
+  }
+  if(audioContext && audioContext.state === "suspended") audioContext.resume();
+  return audioContext;
+}
+function tone(frequency, duration, type="sine", volume=0.045, delay=0){
+  if(!soundEnabled) return;
+  const ctx = getAudioContext();
+  if(!ctx) return;
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const startAt = ctx.currentTime + delay;
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(frequency, startAt);
+  gain.gain.setValueAtTime(0.0001, startAt);
+  gain.gain.exponentialRampToValueAtTime(volume, startAt + 0.012);
+  gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+  oscillator.connect(gain);
+  gain.connect(ctx.destination);
+  oscillator.start(startAt);
+  oscillator.stop(startAt + duration + 0.02);
+}
+function startSpinSound(){
+  if(!soundEnabled) return;
+  getAudioContext();
+  let count = 0;
+  const tick = () => {
+    if(!spinning || !soundEnabled){ clearTimeout(tickTimer); tickTimer = null; return; }
+    // Click scurt, asemănător opritorului unei roți de tombolă.
+    tone(430 + Math.min(count * 7, 230), 0.035, "square", 0.014);
+    count++;
+    // Intervalul crește treptat, urmărind încetinirea roții.
+    const progress = Math.min(count / 34, 1);
+    const interval = 42 + progress * 145;
+    tickTimer = setTimeout(tick, interval);
+  };
+  tick();
+}
+function stopSpinSound(){
+  if(tickTimer){ clearTimeout(tickTimer); tickTimer = null; }
+}
+function playWinSound(){
+  if(!soundEnabled) return;
+  // Semnal de oprire: clopoțel în trei note, cu un accent final.
+  tone(659.25, .20, "sine", .055, 0);
+  tone(783.99, .22, "sine", .060, .14);
+  tone(987.77, .42, "sine", .065, .29);
+  tone(1318.51, .28, "triangle", .035, .48);
+}
+function playResetSound(){
+  if(!soundEnabled) return;
+  tone(523.25, .10, "sine", .03, 0);
+  tone(392.00, .15, "sine", .03, .09);
+}
+
+function el(tag,attrs={},parent=svg){
+ const node=document.createElementNS(NS,tag);
+ Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,v));
+ parent.appendChild(node); return node;
+}
+function point(r,a){const rad=(a-90)*Math.PI/180;return [cx+r*Math.cos(rad),cy+r*Math.sin(rad)]}
+function drawWheel(){
+ svg.innerHTML="";
+ el("circle",{cx,cy,r:radius+8,fill:"#d69b27",stroke:"#fff", "stroke-width":10});
+ for(let i=0;i<n;i++){
+   const start=i*step, end=(i+1)*step;
+   const p1=point(radius,start),p2=point(radius,end);
+   const d=`M ${cx} ${cy} L ${p1[0]} ${p1[1]} A ${radius} ${radius} 0 0 1 ${p2[0]} ${p2[1]} Z`;
+   el("path",{d,fill:colors[i],stroke:"#fff", "stroke-width":4});
+   const mid=start+step/2, pos=point(224,mid);
+   const g=el("g",{transform:`translate(${pos[0]} ${pos[1]}) rotate(${mid})`});
+   const num=document.createElementNS(NS,"text");
+   num.setAttribute("x","0");num.setAttribute("y","-30");num.setAttribute("text-anchor","middle");
+   num.setAttribute("font-size","25");num.setAttribute("font-weight","1000");num.setAttribute("fill","#bd2e32");
+   num.textContent=String(i+1).padStart(2,"0");g.appendChild(num);
+   const words=wrap(challenges[i],17);
+   words.forEach((line,j)=>{
+     const t=document.createElementNS(NS,"text");
+     t.setAttribute("x","0");t.setAttribute("y",String(-2+j*22));
+     t.setAttribute("text-anchor","middle");t.setAttribute("font-size",words.length>2?"14":"16");
+     t.setAttribute("font-weight","900");t.setAttribute("fill","#17345b");
+     t.textContent=line;g.appendChild(t);
+   });
+ }
+ el("circle",{cx,cy,r:radius,fill:"none",stroke:"#fff", "stroke-width":8});
+}
+function wrap(text,max){
+ const words=text.split(" "),lines=[];let line="";
+ words.forEach(w=>{if((line+" "+w).trim().length>max && line){lines.push(line);line=w}else line=(line+" "+w).trim()});
+ if(line)lines.push(line);return lines;
+}
+drawWheel();
+
+const mode=document.getElementById("mode"), recipients=document.getElementById("recipients");
+const recipientsBox=document.getElementById("recipientsBox"),recipientsLabel=document.getElementById("recipientsLabel");
+mode.addEventListener("change",()=>{
+ const m=mode.value;
+ recipientsBox.style.display=m==="random"?"none":"block";
+ recipientsLabel.textContent=m==="teams"?"Denumirile echipelor":"Numele elevilor";
+ recipients.placeholder=m==="teams"?"Echipa 1\nEchipa 2\nEchipa 3":"Elevul 1\nElevul 2\nElevul 3";
+});
+function getRecipient(){
+ if(mode.value==="random")return "Provocare extrasă aleatoriu";
+ const list=recipients.value.split(/\n|,/).map(s=>s.trim()).filter(Boolean);
+ const fallback=mode.value==="teams"?"Echipa":"Elevul";
+ const who=list.length?list[assignmentIndex%list.length]:`${fallback} ${assignmentIndex+1}`;
+ assignmentIndex++;return who;
+}
+function updateStatus(){
+ document.getElementById("count").textContent=`${history.length} / ${n}`;
+ document.getElementById("bar").style.width=(history.length/n*100)+"%";
+ const pills=document.getElementById("pills");pills.innerHTML="";
+ if(!history.length){pills.innerHTML='<span class="field-note">Niciun dosar extras încă.</span>';return}
+ history.forEach(idx=>{
+   const p=document.createElement("span");p.className="pill"+(idx===lastIndex?" current":"");
+   p.textContent=String(idx+1).padStart(2,"0")+" · "+challenges[idx];pills.appendChild(p);
+ });
+}
+function selectNext(){
+ if(spinning)return;
+ getAudioContext();
+ if(remaining.length===0){
+  document.getElementById("resultEyebrow").textContent="Toate provocările au fost repartizate";
+  document.getElementById("resultTitle").textContent="Misiune îndeplinită!";
+  document.getElementById("resultText").textContent="Cele 12 dosare au fost distribuite. Apasă „REIA JOCUL” pentru o nouă rundă.";
+  return;
+ }
+ spinning=true;
+ startSpinSound();
+ document.getElementById("spinBtn").disabled=true;
+ document.getElementById("nextBtn").disabled=true;
+ const pickPos=Math.floor(Math.random()*remaining.length);
+ const chosen=remaining.splice(pickPos,1)[0];
+ // SVG sector i is centered at i*step+step/2; pointer is at top.
+ // Rotate the wheel so the selected sector center lands at the top.
+ const targetBase=360-(chosen*step+step/2);
+ const current=rotation%360;
+ let delta=(targetBase-current+360)%360;
+ const extraTurns=5+Math.floor(Math.random()*3);
+ const target=rotation+extraTurns*360+delta;
+ const from=rotation, duration=4300, start=performance.now();
+ function animate(now){
+  const t=Math.min(1,(now-start)/duration);
+  const eased=1-Math.pow(1-t,4);
+  rotation=from+(target-from)*eased;
+  svg.style.transform=`rotate(${rotation}deg)`;
+  if(t<1)requestAnimationFrame(animate);
+  else{
+   rotation=target%360;svg.style.transform=`rotate(${rotation}deg)`;
+   history.push(chosen);lastIndex=chosen;
+   const recipient=getRecipient();
+   document.getElementById("resultEyebrow").textContent=recipient;
+   document.getElementById("resultTitle").textContent=`DOSARUL ${String(chosen+1).padStart(2,"0")}: ${challenges[chosen]}`;
+   document.getElementById("resultText").textContent="Dosarul a fost repartizat! Citiți situația, discutați opțiunile și argumentați alegerea echipei.";
+   updateStatus();
+   spinning=false;
+   stopSpinSound();
+   playWinSound();
+   document.getElementById("spinBtn").disabled=false;
+   document.getElementById("nextBtn").disabled=false;
+   if(remaining.length===0)document.getElementById("spinBtn").textContent="TOATE DOSARELE AU FOST EXTRASE";
+  }
+ }
+ requestAnimationFrame(animate);
+}
+function resetGame(){
+ if(spinning)return;
+ playResetSound();
+ remaining=[...Array(n).keys()];history=[];assignmentIndex=0;lastIndex=-1;rotation=0;
+ svg.style.transition="transform .5s ease";svg.style.transform="rotate(0deg)";
+ setTimeout(()=>svg.style.transition="",520);
+ document.getElementById("resultEyebrow").textContent="Ești gata de joc?";
+ document.getElementById("resultTitle").textContent="Așteptăm prima provocare!";
+ document.getElementById("resultText").textContent="Apasă „ÎNVÂRTE ROATA!” pentru a repartiza primul dosar secret.";
+ document.getElementById("spinBtn").textContent="ÎNVÂRTE ROATA!";
+ updateStatus();
+}
+document.getElementById("spinBtn").addEventListener("click",selectNext);
+document.getElementById("nextBtn").addEventListener("click",selectNext);
+document.getElementById("resetBtn").addEventListener("click",resetGame);
+const soundBtn = document.getElementById("soundBtn");
+soundBtn.addEventListener("click",()=>{
+  soundEnabled = !soundEnabled;
+  soundBtn.textContent = soundEnabled ? "🔊 SUNET ACTIV" : "🔇 SUNET OPRIT";
+  soundBtn.setAttribute("aria-pressed", String(soundEnabled));
+  if(!soundEnabled) stopSpinSound();
+  else { getAudioContext(); tone(660, .12, "sine", .04); }
+});
+updateStatus();
+</script>
+</body>
+</html>
